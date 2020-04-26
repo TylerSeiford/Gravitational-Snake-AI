@@ -115,7 +115,7 @@ void Game::init(int width, int height, int tiles_count)
 	rocks_particles = new Particle_System(apple->position, tile_texture, { 0.3f, 0.3f, 0.3f, 1.0f }, 32, 32, false);
 	
 	// Rock.
-	spawn_rock();
+	// spawn_rock();
 }
 
 // Spawn a rock at a random position each time the snake eats an apple.
@@ -186,7 +186,7 @@ void Game::restart()
 	srand(static_cast<unsigned int>(time(0)));
 	
 	// Rock.
-	spawn_rock();
+	// spawn_rock();
 
 	// Apple.
 	apple->cell = empty_cells[rand() % empty_cells.size()];
@@ -383,7 +383,7 @@ void Game::update(float dt)
 
 			// Spawn a rock 50% chance.
 			if (rand() % 100 + 1 > 50)
-				spawn_rock();
+				// spawn_rock();
 
 			// Grow tail.
 			{
