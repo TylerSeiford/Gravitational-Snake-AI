@@ -2,19 +2,8 @@
 #include <thread>
 #include <iostream>
 
-#if defined(_WIN32)
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
-
-#elif defined(__APPLE__)
-#include <OpenGL/gl3.h>
-#include <glfw/glfw3.h>
-
-#elif defined (__linux__)
-#include <GL/gl.h>
-#include <glfw/glfw3.h>
-#endif
-
 
 #include "game.h"
 
@@ -69,14 +58,11 @@ int main()
 		// No v-sync.
 		glfwSwapInterval(0);
 
-#if defined(_WIN32)
 		// Initialize GLAD after setting current context as it needs a current context to load from. 
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
 			std::cerr << "ERROR: failed to initialize GLAD." << std::endl;
-			return -1;
 		}
-#endif
 
 		game.init(WIDTH, HEIGHT, 32);
 
