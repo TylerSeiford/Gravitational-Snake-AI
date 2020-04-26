@@ -321,15 +321,29 @@ void Game::update(float dt)
 			}
 
 			// Move snake head.
-			if (snake_current_cell.x <= 0)
-				snake_current_cell.x = tile_count_x;
-			else if (snake_current_cell.x > tile_count_x)
-				snake_current_cell.x = 1;
+			if (snake_current_cell.x <= 0) {
+				//snake_current_cell.x = tile_count_x;
+				snake_speed = 0;
+				game_over = true;
+			}
+			else if (snake_current_cell.x > tile_count_x) {
+				//snake_current_cell.x = 1;
+				snake_speed = 0;
+				game_over = true;
+			}
 
-			if (snake_current_cell.y <= 0)
-				snake_current_cell.y = tile_count_y;
-			else if (snake_current_cell.y > tile_count_y)
-				snake_current_cell.y = 1;
+			if (snake_current_cell.y <= 0) {
+				//snake_current_cell.y = tile_count_y;
+				snake_speed = 0;
+				game_over = true;
+			}
+			else if (snake_current_cell.y > tile_count_y) {
+				//snake_current_cell.y = 1;
+				snake_current_cell = snake_last_cell;
+
+				snake_speed = 0;
+				game_over = true;
+			}
 
 			snake[0].cell = snake_current_cell;
 			snake[0].position = glm::vec2(snake_current_cell.x * cell_width - cell_width * 0.5f, snake_current_cell.y * cell_height - cell_height * 0.5f);
