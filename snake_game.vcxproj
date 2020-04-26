@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\audio.h" />
+    <ClInclude Include="src\config.h" />
     <ClInclude Include="src\ext\dr_wav.h" />
     <ClInclude Include="src\ext\gltext.h" />
     <ClInclude Include="src\ext\stb_image.h" />

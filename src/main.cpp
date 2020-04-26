@@ -6,16 +6,10 @@
 #include <glfw/glfw3.h>
 
 #include "game.h"
-
-#define WIDTH  1280
-#define HEIGHT 720
-
-//#define WIDTH  1920
-//#define HEIGHT 1080
+#include "config.h"
 
 static Game game;
 static bool window_minimized = false;
-static bool fullscreen = false;
 
 static void glfw_error_callback(int error, const char* description);
 static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -39,7 +33,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Create a window.
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Snake", fullscreen? glfwGetPrimaryMonitor() : NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Snake", FULLSCREEN ? glfwGetPrimaryMonitor() : NULL, NULL);
 
 	if (window)
 	{		
@@ -68,7 +62,7 @@ int main()
 
 		double dt = 0.0;
 		double last_frame_time = 0.0;
-		const double display_max_frame_time = 1.0f / 60.0;
+		const double display_max_frame_time = 1.0f / FPS;
 
 		while (!glfwWindowShouldClose(window))
 		{

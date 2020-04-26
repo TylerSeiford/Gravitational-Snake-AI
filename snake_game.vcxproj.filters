@@ -72,6 +72,9 @@
     <ClInclude Include="src\ext\stb_vorbis.h">
       <Filter>ext</Filter>
     </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
