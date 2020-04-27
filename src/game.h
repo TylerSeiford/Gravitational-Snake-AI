@@ -34,6 +34,17 @@ enum SUPPORTED_KEYS
 class Game
 {
 public:
+	enum class INPUT {
+		NONE = 0,
+		PAUSED,
+		RESTART,
+		SPEED_DOWN,
+		SPEED_UP,
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
+	};
 
 	bool keyboard_keys[1024];
 
@@ -54,6 +65,8 @@ public:
 	void spawn_rock();
 
 	void restart();
+
+	INPUT getKeys();
 
 private:
 

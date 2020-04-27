@@ -211,50 +211,72 @@ void Game::restart()
 	snake_speed = SPEED;
 }
 
-void Game::process_input()
-{
+Game::INPUT Game::getKeys() {
 	if (keyboard_keys[KEY_P])
-	{
-		if(!game_over)
-			game_paused = !game_paused;
-	}
-
+		return INPUT::PAUSED;
 	if (keyboard_keys[KEY_R])
-	{
-		restart();
-	}
+		return INPUT::RESTART;
 
 	if (keyboard_keys[KEY_LEFT_BRACKET])
-	{
-		snake_speed--;
-		if (snake_speed < 0)
-			snake_speed = 0;
-	}
+		return INPUT::SPEED_DOWN;
 	else if (keyboard_keys[KEY_RIGHT_BRACKET])
-		snake_speed++;
+		return INPUT::SPEED_UP;
 
-	if (!game_paused)
-	{
-		if (keyboard_keys[KEY_W] || keyboard_keys[KEY_UP])
-		{
-			if (old_direction == DIRECTION::LEFT || old_direction == DIRECTION::RIGHT)
-				current_direction = DIRECTION::UP;
-		}
-		else if (keyboard_keys[KEY_S] || keyboard_keys[KEY_DOWN])
-		{
-			if (old_direction == DIRECTION::LEFT || old_direction == DIRECTION::RIGHT)
+	if (keyboard_keys[KEY_W] || keyboard_keys[KEY_UP])
+		return INPUT::UP;
+	else if (keyboard_keys[KEY_S] || keyboard_keys[KEY_DOWN])
+		return INPUT::DOWN;
+	else if (keyboard_keys[KEY_A] || keyboard_keys[KEY_LEFT])
+		return INPUT::LEFT;
+	else if (keyboard_keys[KEY_D] || keyboard_keys[KEY_RIGHT])
+		return INPUT::RIGHT;
+
+	return INPUT::NONE;
+}
+
+void Game::process_input() {
+	switch (getKeys()) {
+		case INPUT::PAUSED:
+			if (!game_over)
+				game_paused = !game_paused;
+			break;
+		case INPUT::RESTART:
+			restart();
+			break;
+		case INPUT::SPEED_DOWN:
+			snake_speed--;
+			if (snake_speed < 0)
+				snake_speed = 0;
+			break;
+		case INPUT::SPEED_UP:
+			snake_speed++;
+			break;
+		case INPUT::UP:
+			if (!game_paused) {
+				if (old_direction == DIRECTION::LEFT || old_direction == DIRECTION::RIGHT)
+					current_direction = DIRECTION::UP;
+			}
+			break;
+		case INPUT::DOWN:
+			if (!game_paused) {
+				if (old_direction == DIRECTION::LEFT || old_direction == DIRECTION::RIGHT)
 					current_direction = DIRECTION::DOWN;
-		}
-		else if (keyboard_keys[KEY_A] || keyboard_keys[KEY_LEFT])
-		{
-			if (old_direction == DIRECTION::UP || old_direction == DIRECTION::DOWN)
+			}
+			break;
+		case INPUT::LEFT:
+			if (!game_paused) {
+				if (old_direction == DIRECTION::UP || old_direction == DIRECTION::DOWN)
 					current_direction = DIRECTION::LEFT;
-		}
-		else if (keyboard_keys[KEY_D] || keyboard_keys[KEY_RIGHT])
-		{
-			if (old_direction == DIRECTION::UP || old_direction == DIRECTION::DOWN)
+			}
+			break;
+		case INPUT::RIGHT:
+			if (!game_paused) {
+				if (old_direction == DIRECTION::UP || old_direction == DIRECTION::DOWN)
 					current_direction = DIRECTION::RIGHT;
-		}
+			}
+			break;
+		default:
+			break;
 	}
 }
 
