@@ -55,7 +55,7 @@ int main()
 			std::cerr << "ERROR: failed to initialize GLAD." << std::endl;
 		}
 
-		game.init(WIDTH, HEIGHT, 32);
+		game.init(WIDTH, HEIGHT, TILE_WIDTH);
 
 		double dt = 0.0;
 		double last_frame_time = 0.0;
@@ -88,7 +88,7 @@ int main()
 			// Sleep to save cpu cycles.
 			double time_elapsed_for_frame = glfwGetTime() - begin_frame_time;
 
-			if (VSYNC && time_elapsed_for_frame < MAX_FRAMETIME) {
+			if (SYNC && time_elapsed_for_frame < MAX_FRAMETIME) {
 				double ms = (MAX_FRAMETIME - time_elapsed_for_frame) * 1000.0;
 
 				if (ms > 0) {

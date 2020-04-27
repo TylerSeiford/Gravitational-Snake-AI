@@ -208,7 +208,7 @@ void Game::restart()
 	game_over = false;
 
 	score = 0;
-	snake_speed = 8.0f;
+	snake_speed = SPEED;
 }
 
 void Game::process_input()
@@ -287,7 +287,7 @@ void Game::update(float dt)
 	if (!game_paused) {
 		step_timer += dt * snake_speed;
 
-		if (!VSYNC || step_timer >= 1.f) {
+		if (!SYNC || step_timer >= 1.f) {
 			step_timer = 0;
 
 			snake_last_cell = snake_current_cell;
@@ -403,51 +403,51 @@ void Game::update(float dt)
 			score += 10;
 
 			// Increase game speed.
-			snake_speed += 0.3f;
+			snake_speed += SPEEDUP;
 
 			// Spawn a rock 50% chance.
 			if (ROCKS_ENABLED && (rand() % 100 + 1 > 50))
 				spawn_rock();
 
 			// Grow tail.
-			{
-				// Get the last occupied tile to place the new added tail element on it.
-				Cell c_offset = snake_last_cell;
-				if (snake.size() > 1) {
-					Cell c1 = snake[snake.size() - 1].cell;
-					Cell c2 = snake[snake.size() - 2].cell;
-					c_offset = { 2 * c1.x - c2.x, 2 * c1.y - c2.y };
+
+			// Get the last occupied tile to place the new added tail element on it.
+			Cell c_offset = snake_last_cell;
+			if (snake.size() > 1) {
+				Cell c1 = snake[snake.size() - 1].cell;
+				Cell c2 = snake[snake.size() - 2].cell;
+				c_offset = { 2 * c1.x - c2.x, 2 * c1.y - c2.y };
 					
-					// Make sure cell fit within our map boundaries.
-					// The last tail's cell is positioned relative to the previous last tail's cell.
-					if (c_offset.x <= 0)
-						c_offset.x = tile_count_x - c1.x;
-					else if (c_offset.x > tile_count_x)
-						c_offset.x = c1.x + 1;
+				// Make sure cell fit within our map boundaries.
+				// The last tail's cell is positioned relative to the previous last tail's cell.
+				if (c_offset.x <= 0)
+					c_offset.x = tile_count_x - c1.x;
+				else if (c_offset.x > tile_count_x)
+					c_offset.x = c1.x + 1;
 
-					if (c_offset.y <= 0)
-						c_offset.y = tile_count_y - c1.y;
-					else if (c_offset.y > tile_count_y)
-						c_offset.y = c1.y + 1;
-				}
-
-				// Add the new tail tile to the end of snake vector.
-				Texture2D snake_body_tex = Assets::get_texture("tile");
-				Game_Object tail = Game_Object(c_offset, snake[0].scale * 0.85f, glm::vec4(1.0f), snake_body_tex);
-				tail.position = glm::vec2(tail.cell.x * cell_width - cell_width * 0.5f, tail.cell.y * cell_height - cell_height * 0.5f);
-				snake.push_back(tail);
-
-				remove_from_empty_cells(tail.cell);
+				if (c_offset.y <= 0)
+					c_offset.y = tile_count_y - c1.y;
+				else if (c_offset.y > tile_count_y)
+					c_offset.y = c1.y + 1;
 			}
 
-			// Respawn the apple.
-				// Get random tile & place the apple.
-				apple->cell = empty_cells[rand() % empty_cells.size()];
-				apple->position = glm::vec2(apple->cell.x * cell_width - cell_width * 0.5f, apple->cell.y * cell_height - cell_height * 0.5f);
+			// Add the new tail tile to the end of snake vector.
+			Texture2D snake_body_tex = Assets::get_texture("tile");
+			Game_Object tail = Game_Object(c_offset, snake[0].scale * 0.85f, glm::vec4(1.0f), snake_body_tex);
+			tail.position = glm::vec2(tail.cell.x * cell_width - cell_width * 0.5f, tail.cell.y * cell_height - cell_height * 0.5f);
+			snake.push_back(tail);
 
-				// Spawn the particle system.
-				apple_particles->position = apple->position;
-				apple_particles->reset();
+			remove_from_empty_cells(tail.cell);
+
+			// Respawn the apple.
+
+			// Get random tile & place the apple.
+			apple->cell = empty_cells[rand() % empty_cells.size()];
+			apple->position = glm::vec2(apple->cell.x * cell_width - cell_width * 0.5f, apple->cell.y * cell_height - cell_height * 0.5f);
+
+			// Spawn the particle system.
+			apple_particles->position = apple->position;
+			apple_particles->reset();
 		}
 	}
 
@@ -468,8 +468,7 @@ void Game::update(float dt)
 		keyboard_keys[i] = false;
 }
 
-void Game::render()
-{
+void Game::render() {
 	// Clear the screen with solid color.
 	renderer->clear(glm::vec4(0.0f));
 
@@ -481,8 +480,7 @@ void Game::render()
 	renderer->draw_quad(tex, { this->width * 0.5f, this->height * 0.5f }, { this->width, this->height }, glm::vec4(0.3f, 0.3f, 0.3f, 1.0f));
 
 	// Drawing the snake parts backwards to make the head appear at top.
-	for (int i = snake.size() - 1; i >= 0; i--)
-	{
+	for (int i = snake.size() - 1; i >= 0; i--) {
 		float percent = static_cast<float>(i) / static_cast<float>(snake.size());
 		glm::vec3 c = glm::mix(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), percent);
 
@@ -508,27 +506,22 @@ void Game::render()
 	renderer->draw_text(std::to_string(score), { this->width * 0.5f, 50 }, 3.0f + ui_animation_dt, glm::vec4(0.3, 0.7f, 0.9f, 1.0f));
 
 	// Draw game paused text.
-	if (game_paused)
-	{
+	if (game_paused) {
 		renderer->draw_text("GAME PAUSED!", { this->width * 0.5f, this->height * 0.5f - 40 }, 5.0f + ui_animation_dt * .25f, glm::vec4(0.5, 0.8f, 0.2f, 1.0f));
 		renderer->draw_text("Press [P] to unpause.", { this->width * 0.5f, this->height * 0.5f + 30 }, 2.0f + ui_animation_dt * .25f, glm::vec4(1.0, 0.8f, 0.2f, 1.0f));
 	}
 
 	// Draw game over text.
-	if (game_over)
-	{
+	if (game_over) {
 		renderer->draw_text("GAME OVER!", { this->width * 0.5f, this->height * 0.5f - 40 }, 5.0f + ui_animation_dt * .25f, glm::vec4(1.0, 0.1f, 0.1f, 1.0f));
 		renderer->draw_text("Press [R] to restart the game.", { this->width * 0.5f, this->height * 0.5f + 30 }, 3.0f + ui_animation_dt * .25f, glm::vec4(0.5, 0.8f, 0.2f, 1.0f));
 	}
 }
 
-void Game::update_dimensions(int width, int height)
-{
+void Game::update_dimensions(int width, int height) {
 	// Checks if the game window is minimized and if so, pause the game.
-	if (width == 0 || height == 0)
-	{
-		if (!game_over)
-		{
+	if (width == 0 || height == 0) {
+		if (!game_over) {
 			game_paused = true;
 			return;
 		}
@@ -542,8 +535,7 @@ void Game::update_dimensions(int width, int height)
 	cell_height = (static_cast<float>(height) / tile_count_y);
 
 	// Rescale snake.
-	for (unsigned int i = 0; i < snake.size(); ++i)
-	{
+	for (unsigned int i = 0; i < snake.size(); ++i) {
 		Game_Object* snake_part = &snake[i];
 
 		if (i == 0)
