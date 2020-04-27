@@ -1,5 +1,6 @@
 #include "game.h"
 #include "assets.h"
+#include "config.h"
 
 #include <ctime>
 #include <string>
@@ -33,20 +34,21 @@ void Game::init(int width, int height, int tiles_count)
 	Assets::textures["head"] = head_texture;
 
 	// ----------------------------------------------------------
+	if (AUDIO_ENABLED) {
+		// Load audio clips from disk.
+		audio = new Audio();
 
-	// Load audio clips from disk.
-	audio = new Audio();
+		//Assets::audio_clips["eat"] = audio->load_wav_from_file("data/audio/big_bite.wav");
+		Assets::audio_clips["eat"] = audio->load_ogg_from_file("data/audio/big_bite.ogg");
+		Assets::audio_sources["sfx_source"] = audio->create_audio_source(0.75f, 1.f);
 
-	//Assets::audio_clips["eat"] = audio->load_wav_from_file("data/audio/big_bite.wav");
-	Assets::audio_clips["eat"] = audio->load_ogg_from_file("data/audio/big_bite.ogg");
-	Assets::audio_sources["sfx_source"] = audio->create_audio_source(0.75f, 1.f);
+		//Audio_Clip bg_clip = Assets::audio_clips["bg"] = audio->load_wav_from_file("data/audio/bg.wav");
+		//Audio_Source music_source = Assets::audio_sources["music_source"] = audio->create_audio_source(0.25f, 2.f);
+		Audio_Clip bg_clip = Assets::audio_clips["bg"] = audio->load_ogg_from_file("data/audio/bg.ogg");
+		Audio_Source music_source = Assets::audio_sources["music_source"] = audio->create_audio_source(0.10f, 1.f);
 
-	//Audio_Clip bg_clip = Assets::audio_clips["bg"] = audio->load_wav_from_file("data/audio/bg.wav");
-	//Audio_Source music_source = Assets::audio_sources["music_source"] = audio->create_audio_source(0.25f, 2.f);
-	Audio_Clip bg_clip = Assets::audio_clips["bg"] = audio->load_ogg_from_file("data/audio/bg.ogg");
-	Audio_Source music_source = Assets::audio_sources["music_source"] = audio->create_audio_source(0.10f, 1.f);
-	
-	audio->play(music_source, bg_clip, true);
+		audio->play(music_source, bg_clip, true);
+	}
 
 	// ----------------------------------------------------------
 
@@ -384,10 +386,12 @@ void Game::update(float dt)
 		// Collision detection with the apple.
 		if (snake[0].cell == apple->cell)
 		{
-			// Play sound.
-			Audio_Clip clip = Assets::audio_clips["eat"];
-			Audio_Source source = Assets::audio_sources["sfx_source"];
-			audio->play(source, clip);
+			if (AUDIO_ENABLED) {
+				// Play sound.
+				Audio_Clip clip = Assets::audio_clips["eat"];
+				Audio_Source source = Assets::audio_sources["sfx_source"];
+				audio->play(source, clip);
+			}
 
 			// Increase score.
 			score += 10;
@@ -566,7 +570,9 @@ void Game::terminate()
 {
 	delete apple;
 	delete renderer;
-	delete audio;
+	if (AUDIO_ENABLED) {
+		delete audio;
+	}
 	delete rocks_particles;
 	delete apple_particles;
 
