@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\agent.cpp" />
     <ClCompile Include="src\audio.cpp" />
+    <ClCompile Include="src\dumb_agent.cpp" />
     <ClCompile Include="src\ext\glad.c" />
     <ClCompile Include="src\ext\stb_vorbis.c" />
     <ClCompile Include="src\game.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="src\agent.h" />
     <ClInclude Include="src\audio.h" />
     <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\dumb_agent.h" />
     <ClInclude Include="src\ext\dr_wav.h" />
     <ClInclude Include="src\ext\gltext.h" />
     <ClInclude Include="src\ext\stb_image.h" />

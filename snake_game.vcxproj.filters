@@ -40,6 +40,9 @@
     <ClCompile Include="src\agent.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\dumb_agent.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\renderer.h">
@@ -85,6 +88,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\keyboard_agent.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dumb_agent.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
