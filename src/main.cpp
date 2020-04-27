@@ -5,10 +5,13 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
+#include "agent.h"
+#include "keyboard_agent.h"
 #include "game.h"
 #include "config.h"
 
 static Game game;
+static KeyboardAgent agent;
 static bool window_minimized = false;
 
 static void glfw_error_callback(int error, const char* description);
@@ -17,53 +20,7 @@ static void glfw_window_iconify_callback(GLFWwindow* window, int iconified);
 static void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 
-bool keyboard_keys[1024];
-enum SUPPORTED_KEYS {
-	KEY_W = GLFW_KEY_W,
-	KEY_S = GLFW_KEY_S,
-	KEY_A = GLFW_KEY_A,
-	KEY_D = GLFW_KEY_D,
-	KEY_P = GLFW_KEY_P,
-	KEY_R = GLFW_KEY_R,
-	KEY_UP = GLFW_KEY_UP,
-	KEY_DOWN = GLFW_KEY_DOWN,
-	KEY_LEFT = GLFW_KEY_LEFT,
-	KEY_RIGHT = GLFW_KEY_RIGHT,
-	KEY_LEFT_BRACKET = GLFW_KEY_LEFT_BRACKET,
-	KEY_RIGHT_BRACKET = GLFW_KEY_RIGHT_BRACKET
-};
-int supported_keys[12] = {KEY_UP , KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_W, KEY_S, KEY_A, KEY_D, KEY_P, KEY_R, KEY_LEFT_BRACKET, KEY_RIGHT_BRACKET};
-
-Game::INPUT getKeys() {
-	if (keyboard_keys[KEY_P])
-		return Game::INPUT::PAUSED;
-	if (keyboard_keys[KEY_R])
-		return Game::INPUT::RESTART;
-
-	if (keyboard_keys[KEY_LEFT_BRACKET])
-		return Game::INPUT::SPEED_DOWN;
-	else if (keyboard_keys[KEY_RIGHT_BRACKET])
-		return Game::INPUT::SPEED_UP;
-
-	if (keyboard_keys[KEY_W] || keyboard_keys[KEY_UP])
-		return Game::INPUT::UP;
-	else if (keyboard_keys[KEY_S] || keyboard_keys[KEY_DOWN])
-		return Game::INPUT::DOWN;
-	else if (keyboard_keys[KEY_A] || keyboard_keys[KEY_LEFT])
-		return Game::INPUT::LEFT;
-	else if (keyboard_keys[KEY_D] || keyboard_keys[KEY_RIGHT])
-		return Game::INPUT::RIGHT;
-
-	return Game::INPUT::NONE;
-}
-
-void clearKeys() {
-	for (auto& i : supported_keys)
-		keyboard_keys[i] = false;
-}
-
-int main()
-{
+int main() {
 	// One of the few functions that can be called before GLFW initialization.
 	glfwSetErrorCallback(glfw_error_callback);
 
@@ -119,11 +76,11 @@ int main()
 			// Only update game when window is active.
 			if (!window_minimized) {
 				// Input.
-				game.process_input(getKeys());
+				game.process_input(agent.getInput());
 			
 				// Update.
 				game.update(dt);
-				clearKeys();
+				agent.update();
 
 				// Render.
 				game.render();
@@ -161,10 +118,10 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 
 	if (key >= 0 && key < 1024) {
 		if (action == GLFW_PRESS) {
-			keyboard_keys[key] = GLFW_TRUE;
+			agent.keyPress(key);
 		}
 		else if (action == GLFW_RELEASE) {
-			keyboard_keys[key] = GLFW_FALSE;
+			agent.keyRelease(key);
 		}
 	}
 }

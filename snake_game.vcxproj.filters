@@ -34,6 +34,12 @@
     <ClCompile Include="src\ext\stb_vorbis.c">
       <Filter>ext</Filter>
     </ClCompile>
+    <ClCompile Include="src\keyboard_agent.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\agent.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\renderer.h">
@@ -73,6 +79,12 @@
       <Filter>ext</Filter>
     </ClInclude>
     <ClInclude Include="src\config.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\agent.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\keyboard_agent.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

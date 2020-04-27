@@ -1,8 +1,8 @@
 #pragma once
 
 // VISUAL SETTINGS
-constexpr int WIDTH = 1920;
-constexpr int HEIGHT = 1080;
+constexpr int WIDTH = 1280;
+constexpr int HEIGHT = 720;
 constexpr double FPS = 100;
 constexpr bool FULLSCREEN = false;
 
