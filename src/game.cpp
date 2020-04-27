@@ -114,36 +114,39 @@ void Game::init(int width, int height, int tiles_count)
 
 	// TODO: Clean up.
 	// Rock particles must be created before spawning a rock at game start to prevent it from accessing garbage memory.
-	rocks_particles = new Particle_System(apple->position, tile_texture, { 0.3f, 0.3f, 0.3f, 1.0f }, 32, 32, false);
+	if(ROCKS_ENABLED)
+		rocks_particles = new Particle_System(apple->position, tile_texture, { 0.3f, 0.3f, 0.3f, 1.0f }, 32, 32, false);
 	
 	// Rock.
-	// spawn_rock();
+	if (ROCKS_ENABLED)
+		spawn_rock();
 }
 
 // Spawn a rock at a random position each time the snake eats an apple.
-void Game::spawn_rock()
-{
-	// Get the rock texture.
-	Texture2D tex = Assets::get_texture("tile");
-	tex.tiling_x = 1 + (rand() % 2);
-	tex.tiling_y = 1 + (rand() % 2);
+void Game::spawn_rock() {
+	if (ROCKS_ENABLED) {
+		// Get the rock texture.
+		Texture2D tex = Assets::get_texture("tile");
+		tex.tiling_x = 1 + (rand() % 2);
+		tex.tiling_y = 1 + (rand() % 2);
 
-	// Get a random empty cell.
-	Cell c = empty_cells[rand() % empty_cells.size()];
-	
-	// Create a rock game_object.
-	Game_Object rock = Game_Object(c, { cell_width * 0.75f, cell_height * 0.75f }, { 0.6f, 0.6f, 0.6f, 1.0f }, tex);
-	rock.position = glm::vec2(c.x * cell_width - cell_width * 0.5f, c.y * cell_height - cell_height * 0.5f);
-	
-	// Add the rock to the list of already spawn rocks.
-	rocks.push_back(rock);
-	
-	// Remove the rock's cell from empty cells list.
-	remove_from_empty_cells(c);
-	
-	// Spawn particles.
-	rocks_particles->position = rock.position;
-	rocks_particles->reset();
+		// Get a random empty cell.
+		Cell c = empty_cells[rand() % empty_cells.size()];
+
+		// Create a rock game_object.
+		Game_Object rock = Game_Object(c, { cell_width * 0.75f, cell_height * 0.75f }, { 0.6f, 0.6f, 0.6f, 1.0f }, tex);
+		rock.position = glm::vec2(c.x * cell_width - cell_width * 0.5f, c.y * cell_height - cell_height * 0.5f);
+
+		// Add the rock to the list of already spawn rocks.
+		rocks.push_back(rock);
+
+		// Remove the rock's cell from empty cells list.
+		remove_from_empty_cells(c);
+
+		// Spawn particles.
+		rocks_particles->position = rock.position;
+		rocks_particles->reset();
+	}
 }
 
 // TODO: @Clenaup @Redundant as Game::init() function.
@@ -151,7 +154,9 @@ void Game::restart()
 {
 	snake.clear();
 	empty_cells.clear();
-	rocks.clear();
+	if (ROCKS_ENABLED)
+		rocks.clear();
+
 
 	current_direction = DIRECTION::RIGHT;
 	old_direction = current_direction;
@@ -188,7 +193,8 @@ void Game::restart()
 	srand(static_cast<unsigned int>(time(0)));
 	
 	// Rock.
-	// spawn_rock();
+	if (ROCKS_ENABLED)
+		spawn_rock();
 
 	// Apple.
 	apple->cell = empty_cells[rand() % empty_cells.size()];
@@ -370,16 +376,18 @@ void Game::update(float dt)
 		}
 
 		// Collision detection with rocks.
-		for (unsigned int i = 0; i < rocks.size(); ++i)
-		{
-			if (snake[0].cell == rocks[i].cell)
+		if (ROCKS_ENABLED) {
+			for (unsigned int i = 0; i < rocks.size(); ++i)
 			{
-				// TODO: GAME OVER!
-				snake_current_cell = snake_last_cell;
+				if (snake[0].cell == rocks[i].cell)
+				{
+					// TODO: GAME OVER!
+					snake_current_cell = snake_last_cell;
 
-				snake_speed = 0;
+					snake_speed = 0;
 
-				game_over = true;
+					game_over = true;
+				}
 			}
 		}
 
@@ -400,8 +408,8 @@ void Game::update(float dt)
 			snake_speed += 0.3f;
 
 			// Spawn a rock 50% chance.
-			if (rand() % 100 + 1 > 50)
-				// spawn_rock();
+			if (ROCKS_ENABLED && (rand() % 100 + 1 > 50))
+				spawn_rock();
 
 			// Grow tail.
 			{
@@ -450,7 +458,8 @@ void Game::update(float dt)
 
 	// Update particle system.
 	apple_particles->update(dt);
-	rocks_particles->update(dt);
+	if(ROCKS_ENABLED)
+		rocks_particles->update(dt);
 
 	// TODO: Winning condition.
 	if (empty_cells.size() < 1)
@@ -488,14 +497,17 @@ void Game::render()
 
 	// Draw particle system.
 	apple_particles->self_draw(*renderer);
-	rocks_particles->self_draw(*renderer);
+	if (ROCKS_ENABLED)
+		rocks_particles->self_draw(*renderer);
 
 	// Draw apple.
 	apple->draw_self(*renderer);
 
 	// Draw rocks.
-	for (unsigned int i = 0; i < rocks.size(); ++i)
-		rocks[i].draw_self(*renderer);
+	if (ROCKS_ENABLED) {
+		for (unsigned int i = 0; i < rocks.size(); ++i)
+			rocks[i].draw_self(*renderer);
+	}
 
 	// Draw score.
 	renderer->draw_text(std::to_string(score), { this->width * 0.5f, 50 }, 3.0f + ui_animation_dt, glm::vec4(0.3, 0.7f, 0.9f, 1.0f));
@@ -531,7 +543,7 @@ void Game::update_dimensions(int width, int height)
 	this->height = height;
 	this->aspect = static_cast<float>(height) / static_cast<float>(width);
 
-	cell_width  = (static_cast<float>(width)  / tile_count_x);
+	cell_width = (static_cast<float>(width) / tile_count_x);
 	cell_height = (static_cast<float>(height) / tile_count_y);
 
 	// Rescale snake.
@@ -543,7 +555,7 @@ void Game::update_dimensions(int width, int height)
 			snake_part->scale = { cell_width * 1.1f, cell_height * 1.1f };
 		else
 			snake_part->scale = { cell_width * 0.9f, cell_height * 0.9f };
-		
+
 		snake_part->position = glm::vec2(snake_part->cell.x * cell_width - cell_width * 0.5f, snake_part->cell.y * cell_height - cell_height * 0.5f);
 	}
 
@@ -552,16 +564,18 @@ void Game::update_dimensions(int width, int height)
 	apple->position = glm::vec2(apple->cell.x * cell_width - cell_width * 0.5f, apple->cell.y * cell_height - cell_height * 0.5f);
 
 	// Rescale rocks.
-	for (unsigned int i = 0; i < rocks.size(); ++i)
-	{
-		Game_Object* rock = &rocks[i];
-		rock->scale = { cell_width * 0.75f, cell_height * 0.75f };
-		rock->position = glm::vec2(rock->cell.x * cell_width - cell_width * 0.5f, rock->cell.y * cell_height - cell_height * 0.5f);
+	if (ROCKS_ENABLED) {
+		for (unsigned int i = 0; i < rocks.size(); ++i) {
+			Game_Object* rock = &rocks[i];
+			rock->scale = { cell_width * 0.75f, cell_height * 0.75f };
+			rock->position = glm::vec2(rock->cell.x * cell_width - cell_width * 0.5f, rock->cell.y * cell_height - cell_height * 0.5f);
+		}
 	}
 
 	// Rescale particle system.
 	apple_particles->position = apple->position;
-	rocks_particles->position = rocks[0].position;
+	if (ROCKS_ENABLED)
+		rocks_particles->position = rocks[0].position;
 
 	renderer->update_render_dimensions(width, height);
 }
@@ -570,10 +584,10 @@ void Game::terminate()
 {
 	delete apple;
 	delete renderer;
-	if (AUDIO_ENABLED) {
+	if (AUDIO_ENABLED)
 		delete audio;
-	}
-	delete rocks_particles;
+	if (ROCKS_ENABLED)
+		delete rocks_particles;
 	delete apple_particles;
 
 	Assets::dispose();

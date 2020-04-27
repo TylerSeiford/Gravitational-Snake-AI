@@ -8,5 +8,5 @@ constexpr bool FULLSCREEN = false;
 
 // TODO
 constexpr bool AUDIO_ENABLED = true;
-// constexpr bool ROCKS_ENABLED = false;
+constexpr bool ROCKS_ENABLED = false;
 // constexpr bool WALLS_ENABLED = true;
