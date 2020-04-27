@@ -211,31 +211,8 @@ void Game::restart()
 	snake_speed = SPEED;
 }
 
-Game::INPUT Game::getKeys() {
-	if (keyboard_keys[KEY_P])
-		return INPUT::PAUSED;
-	if (keyboard_keys[KEY_R])
-		return INPUT::RESTART;
-
-	if (keyboard_keys[KEY_LEFT_BRACKET])
-		return INPUT::SPEED_DOWN;
-	else if (keyboard_keys[KEY_RIGHT_BRACKET])
-		return INPUT::SPEED_UP;
-
-	if (keyboard_keys[KEY_W] || keyboard_keys[KEY_UP])
-		return INPUT::UP;
-	else if (keyboard_keys[KEY_S] || keyboard_keys[KEY_DOWN])
-		return INPUT::DOWN;
-	else if (keyboard_keys[KEY_A] || keyboard_keys[KEY_LEFT])
-		return INPUT::LEFT;
-	else if (keyboard_keys[KEY_D] || keyboard_keys[KEY_RIGHT])
-		return INPUT::RIGHT;
-
-	return INPUT::NONE;
-}
-
-void Game::process_input() {
-	switch (getKeys()) {
+void Game::process_input(INPUT input) {
+	switch (input) {
 		case INPUT::PAUSED:
 			if (!game_over)
 				game_paused = !game_paused;
@@ -486,8 +463,6 @@ void Game::update(float dt)
 	// TODO: Create another array to hold the last state the button was in and compare with to check if its down or held.
 	// TODO: Use vector of the last pressed keys and reset them?!?!?!
 	// Clear input of each supported key to false for the next frame.
-	for (auto& i : supported_keys)
-		keyboard_keys[i] = false;
 }
 
 void Game::render() {
