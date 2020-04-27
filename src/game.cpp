@@ -284,37 +284,27 @@ void Game::update(float dt)
 
 	ui_animation_dt = abs(sin(a)) - 0.5f;
 
-	if (!game_paused)
-	{
+	if (!game_paused) {
 		step_timer += dt * snake_speed;
 
-		if (step_timer >= 1.f)
-		{
+		if (step_timer >= 1.f) {
 			step_timer = 0;
 
 			snake_last_cell = snake_current_cell;
 
-			switch (current_direction)
-			{
+			switch (current_direction) {
 				case DIRECTION::UP:
-				{
 					snake_current_cell.y += 1;
-				} break;
-
+					break;
 				case DIRECTION::DOWN:
-				{
 					snake_current_cell.y -= 1;
-				} break;
-
+					break;
 				case DIRECTION::LEFT:
-				{
 					snake_current_cell.x -= 1;
-				} break;
-
+					break;
 				case DIRECTION::RIGHT:
-				{
 					snake_current_cell.x += 1;
-				} break;
+					break;
 			}
 
 			// Add last cell used by the tail to the empty list.
@@ -322,35 +312,48 @@ void Game::update(float dt)
 			empty_cells.push_back(last_tail_cell);
 
 			// Move snake parts.
-			for (int i = snake.size() - 1; i > 0; i--)
-			{
+			for (int i = snake.size() - 1; i > 0; i--) {
 				snake[i].cell = snake[i - 1].cell;
 				snake[i].position = snake[i - 1].position;
 			}
 
 			// Move snake head.
 			if (snake_current_cell.x <= 0) {
-				//snake_current_cell.x = tile_count_x;
-				snake_speed = 0;
-				game_over = true;
+				if (WALLS_ENABLED) {
+					snake_speed = 0;
+					game_over = true;
+				}
+				else {
+					snake_current_cell.x = tile_count_x;
+				}
 			}
 			else if (snake_current_cell.x > tile_count_x) {
-				//snake_current_cell.x = 1;
-				snake_speed = 0;
-				game_over = true;
+				if (WALLS_ENABLED) {
+					snake_speed = 0;
+					game_over = true;
+				}
+				else {
+					snake_current_cell.x = 1;
+				}
 			}
 
 			if (snake_current_cell.y <= 0) {
-				//snake_current_cell.y = tile_count_y;
-				snake_speed = 0;
-				game_over = true;
+				if (WALLS_ENABLED) {
+					snake_speed = 0;
+					game_over = true;
+				}
+				else {
+					snake_current_cell.y = tile_count_y;
+				}
 			}
 			else if (snake_current_cell.y > tile_count_y) {
-				//snake_current_cell.y = 1;
-				snake_current_cell = snake_last_cell;
-
-				snake_speed = 0;
-				game_over = true;
+				if (WALLS_ENABLED) {
+					snake_speed = 0;
+					game_over = true;
+				}
+				else {
+					snake_current_cell.y = 1;
+				}
 			}
 
 			snake[0].cell = snake_current_cell;
@@ -362,10 +365,8 @@ void Game::update(float dt)
 		}
 
 		// Check if snake hit one of its tail parts then game over!
-		for (int i = 1; i < snake.size(); i++)
-		{
-			if (snake_current_cell == snake[i].cell)
-			{
+		for (int i = 1; i < snake.size(); i++) {
+			if (snake_current_cell == snake[i].cell) {
 				// TODO: GAME OVER!
 				// TODO: Cleanup.
 				snake_current_cell = snake_last_cell;
@@ -377,10 +378,8 @@ void Game::update(float dt)
 
 		// Collision detection with rocks.
 		if (ROCKS_ENABLED) {
-			for (unsigned int i = 0; i < rocks.size(); ++i)
-			{
-				if (snake[0].cell == rocks[i].cell)
-				{
+			for (unsigned int i = 0; i < rocks.size(); ++i) {
+				if (snake[0].cell == rocks[i].cell) {
 					// TODO: GAME OVER!
 					snake_current_cell = snake_last_cell;
 
@@ -392,8 +391,7 @@ void Game::update(float dt)
 		}
 
 		// Collision detection with the apple.
-		if (snake[0].cell == apple->cell)
-		{
+		if (snake[0].cell == apple->cell) {
 			if (AUDIO_ENABLED) {
 				// Play sound.
 				Audio_Clip clip = Assets::audio_clips["eat"];
@@ -415,8 +413,7 @@ void Game::update(float dt)
 			{
 				// Get the last occupied tile to place the new added tail element on it.
 				Cell c_offset = snake_last_cell;
-				if (snake.size() > 1)
-				{
+				if (snake.size() > 1) {
 					Cell c1 = snake[snake.size() - 1].cell;
 					Cell c2 = snake[snake.size() - 2].cell;
 					c_offset = { 2 * c1.x - c2.x, 2 * c1.y - c2.y };
@@ -444,7 +441,6 @@ void Game::update(float dt)
 			}
 
 			// Respawn the apple.
-			{			
 				// Get random tile & place the apple.
 				apple->cell = empty_cells[rand() % empty_cells.size()];
 				apple->position = glm::vec2(apple->cell.x * cell_width - cell_width * 0.5f, apple->cell.y * cell_height - cell_height * 0.5f);
@@ -452,7 +448,6 @@ void Game::update(float dt)
 				// Spawn the particle system.
 				apple_particles->position = apple->position;
 				apple_particles->reset();
-			}
 		}
 	}
 
