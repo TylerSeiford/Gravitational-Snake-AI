@@ -287,7 +287,7 @@ void Game::update(float dt)
 	if (!game_paused) {
 		step_timer += dt * snake_speed;
 
-		if (step_timer >= 1.f) {
+		if (!VSYNC || step_timer >= 1.f) {
 			step_timer = 0;
 
 			snake_last_cell = snake_current_cell;
