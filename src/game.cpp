@@ -9,8 +9,7 @@
 float ui_animation_dt = 0;
 
 // TODO: Cleanup.
-void Game::init(int width, int height, int tiles_count)
-{
+void Game::init(int width, int height, int tiles_count) {
 	// Load shaders from disk.
 	Shader quad_shader;
 	quad_shader.load_from_file("data/shaders/quad_vertex.glsl", "data/shaders/quad_fragment.glsl");

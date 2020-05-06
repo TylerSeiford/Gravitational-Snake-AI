@@ -5,8 +5,7 @@
 
 #include "renderer.h"
 
-struct Cell
-{
+struct Cell {
 	int x;
 	int y;
 
@@ -21,8 +20,7 @@ struct Cell
 	}
 };
 
-class Game_Object
-{
+class Game_Object {
 public:
 	
 	Cell cell;

@@ -8,11 +8,12 @@
 #include "agent.h"
 #include "keyboard_agent.h"
 #include "dumb_agent.h"
+#include "ai_agent.h"
 #include "game.h"
 #include "config.h"
 
 static Game game;
-static DumbAgent agent;
+static AIAgent agent;
 static bool window_minimized = false;
 
 static void glfw_error_callback(int error, const char* description);
@@ -25,7 +26,7 @@ int main() {
 	// One of the few functions that can be called before GLFW initialization.
 	glfwSetErrorCallback(glfw_error_callback);
 
-	if (!glfwInit()) 	{
+	if (!glfwInit()) {
 		std::cerr << "ERROR: GLFW failed to initialize!" << std::endl;
 		return -1;
 	}

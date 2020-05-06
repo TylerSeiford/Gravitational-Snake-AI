@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\agent.cpp" />
+    <ClCompile Include="src\ai_agent.cpp" />
     <ClCompile Include="src\audio.cpp" />
     <ClCompile Include="src\dumb_agent.cpp" />
     <ClCompile Include="src\ext\glad.c" />
@@ -36,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\agent.h" />
+    <ClInclude Include="src\ai_agent.h" />
     <ClInclude Include="src\audio.h" />
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\dumb_agent.h" />
@@ -117,7 +119,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Tyler\Documents\Tensorflow\tensorflow\bazel-genfiles;$(ProjectDir)\include\;C:\Users\Tyler\Documents\Tensorflow\tensorflow;C:\Users\Tyler\AppData\Roaming\Python\Python36\site-packages\tensorflow_core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

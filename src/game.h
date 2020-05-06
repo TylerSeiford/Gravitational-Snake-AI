@@ -10,8 +10,7 @@
 #include <glfw/glfw3.h>
 
 
-class Game
-{
+class Game {
 public:
 	enum class INPUT {
 		NONE = 0,
@@ -23,6 +22,13 @@ public:
 		DOWN,
 		LEFT,
 		RIGHT
+	};
+
+	struct STATE {
+		int tile_count_x;
+		int tile_count_y;
+		Cell head;
+		Cell apple;
 	};
 
 	void init(int width, int height, int tiles_count);
