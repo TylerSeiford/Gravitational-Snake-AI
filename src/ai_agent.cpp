@@ -8,7 +8,7 @@ Game::INPUT AIAgent::getInput() {
 	return Game::INPUT::NONE;
 }
 
-void AIAgent::update() {}
+void AIAgent::update(Game::State* state) {}
 
 void AIAgent::keyPress(int key) {}
 

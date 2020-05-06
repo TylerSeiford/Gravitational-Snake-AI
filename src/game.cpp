@@ -274,7 +274,7 @@ void Game::remove_from_empty_cells(Cell cell)
 	}
 }
 
-void Game::update(float dt)
+Game::State* Game::update(float dt)
 {
 	// TODO: Clean up.
 	static float a = dt;
@@ -462,6 +462,8 @@ void Game::update(float dt)
 	// TODO: Create another array to hold the last state the button was in and compare with to check if its down or held.
 	// TODO: Use vector of the last pressed keys and reset them?!?!?!
 	// Clear input of each supported key to false for the next frame.
+
+	return new State(tile_count_x, tile_count_y, current_direction, snake_current_cell, apple->cell);
 }
 
 void Game::render() {

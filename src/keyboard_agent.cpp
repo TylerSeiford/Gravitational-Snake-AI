@@ -27,7 +27,7 @@ Game::INPUT KeyboardAgent::getInput() {
 	return Game::INPUT::NONE;
 }
 
-void KeyboardAgent::update() {
+void KeyboardAgent::update(Game::State* state) {
 	for (auto& i : supported_keys)
 		keyboard_keys[i] = false;
 }

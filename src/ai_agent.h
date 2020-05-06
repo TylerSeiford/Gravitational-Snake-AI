@@ -17,7 +17,7 @@ public:
 	AIAgent();
 	~AIAgent();
 	Game::INPUT getInput();
-	void update();
+	void update(Game::State* state);
 	void keyPress(int key);
 	void keyRelease(int key);
 

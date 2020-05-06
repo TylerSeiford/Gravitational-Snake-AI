@@ -22,7 +22,6 @@ struct Cell {
 
 class Game_Object {
 public:
-	
 	Cell cell;
 	
 	glm::vec2 position;

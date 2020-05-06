@@ -23,12 +23,24 @@ public:
 		LEFT,
 		RIGHT
 	};
+	enum class DIRECTION {
+		UP, DOWN, LEFT, RIGHT
+	};
 
-	struct STATE {
+	struct State {
 		int tile_count_x;
 		int tile_count_y;
+		DIRECTION dir;
 		Cell head;
 		Cell apple;
+
+		State(int tile_count_x, int tile_count_y, DIRECTION dir, Cell head, Cell apple) {
+			this->tile_count_x = tile_count_x;
+			this->tile_count_y = tile_count_y;
+			this->dir = dir;
+			this->head = head;
+			this->apple = apple;
+		}
 	};
 
 	void init(int width, int height, int tiles_count);
@@ -37,7 +49,7 @@ public:
 	
 	void process_input(INPUT input);
 
-	void update(float dt);
+	State* update(float dt);
 
 	void render();
 
@@ -50,9 +62,6 @@ public:
 	void restart();
 
 private:
-	enum class DIRECTION {
-		UP, DOWN, LEFT, RIGHT
-	};
 
 	int width;
 	int height;

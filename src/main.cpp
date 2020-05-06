@@ -81,8 +81,7 @@ int main() {
 				game.process_input(agent.getInput());
 			
 				// Update.
-				game.update(dt);
-				agent.update();
+				agent.update(game.update(dt));
 
 				// Render.
 				game.render();

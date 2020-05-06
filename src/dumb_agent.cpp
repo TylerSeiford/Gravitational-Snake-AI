@@ -19,7 +19,7 @@ Game::INPUT DumbAgent::getInput() {
 	}
 }
 
-void DumbAgent::update() {
+void DumbAgent::update(Game::State* state) {
 	count = (count + 1) % 4;
 }
 
